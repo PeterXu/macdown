@@ -23,6 +23,10 @@
 static NSString * const kMPMathJaxCDN =
     @"https://cdn.mathjax.org/mathjax/latest/MathJax.js"
     @"?config=TeX-AMS-MML_HTMLorMML";
+static NSString * const kRaphaelCDN = 
+    @"http://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js";
+static NSString * const kFlowchartCDN = 
+    @"https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.6/flowchart.min.js";
 static NSString * const kMPPrismScriptDirectory = @"Prism/components";
 static NSString * const kMPPrismThemeDirectory = @"Prism/themes";
 static NSString * const kMPPrismPluginDirectory = @"Prism/plugins";
@@ -204,6 +208,7 @@ NS_INLINE BOOL MPAreNilableStringsEqual(NSString *s1, NSString *s2)
 @property (readonly) NSArray *prismStylesheets;
 @property (readonly) NSArray *prismScripts;
 @property (readonly) NSArray *mathjaxScripts;
+@property (readonly) NSArray *flowchartScripts;
 @property (readonly) NSArray *stylesheets;
 @property (readonly) NSArray *scripts;
 @property (copy) NSString *currentHtml;
@@ -424,6 +429,25 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
     return scripts;
 }
 
+- (NSArray *)flowchartScripts
+{
+    NSMutableArray *scripts = [NSMutableArray array];
+    NSURL *url1 = [NSURL URLWithString:kRaphaelCDN];
+    NSURL *url2 = [NSURL URLWithString:kFlowchartCDN];
+    
+    NSBundle *bundle = [NSBundle mainBundle];
+    MPEmbeddedScript *script =
+    [MPEmbeddedScript assetWithURL:[bundle URLForResource:@"init"
+                                            withExtension:@"js"
+                                             subdirectory:@"FlowChart"]
+                           andType:kMPJavaScriptType];
+    
+    [scripts addObject:[MPScript javaScriptWithURL:url1]];
+    [scripts addObject:[MPScript javaScriptWithURL:url2]];
+    [scripts addObject:script];
+    return scripts;
+}
+
 - (NSArray *)stylesheets
 {
     id<MPRendererDelegate> delegate = self.delegate;
@@ -453,6 +477,7 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
         [scripts addObjectsFromArray:self.prismScripts];
     if ([d rendererHasMathJax:self])
         [scripts addObjectsFromArray:self.mathjaxScripts];
+    [scripts addObjectsFromArray:self.flowchartScripts];
     return scripts;
 }
 
@@ -597,6 +622,9 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
         scriptsOption = MPAssetEmbedded;
         [scripts addObjectsFromArray:self.mathjaxScripts];
     }
+    
+    scriptsOption = MPAssetEmbedded;
+    [scripts addObjectsFromArray:self.flowchartScripts];
 
     NSString *title = [self.dataSource rendererHTMLTitle:self];
     if (!title)

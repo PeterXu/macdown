@@ -47,6 +47,12 @@ void hoedown_patch_render_blockcode(
         lang = front;
     }
 
+    int next_pos = -1;
+    int width = 0, height = 0;
+    if (lang && lang->data) {
+        next_pos = parse_at_size(lang->data, &width, &height);
+    }
+   
     hoedown_buffer *mapped = NULL;
     if (lang && extra->language_addition)
     {
@@ -69,9 +75,16 @@ void hoedown_patch_render_blockcode(
         hoedown_escape_html(ob, lang->data, lang->size, 0);
     else
         HOEDOWN_BUFPUTSL(ob, "none");
+
+    if (width > 0) {
+        hoedown_buffer_printf(ob, "\" width=\"%d", width);
+    }
+    if (height > 0) {
+        hoedown_buffer_printf(ob, "\" height=\"%d", height);
+    }
     HOEDOWN_BUFPUTSL(ob, "\">");
 
-	if (text)
+    if (text)
     {
         // Remove last newline to prevent prism from adding a blank line at the
         // end of code blocks.
