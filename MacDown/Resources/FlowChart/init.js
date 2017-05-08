@@ -15,6 +15,7 @@ function drawFlowChart(classname, inline) {
         if (height != null) {
             opts["line-length"] = parseInt(height);
         }
+        opts["arrow-end"] = "open-medium-long";
 
         var ppnode, pnode = el.parentNode;
         if (pnode.nodeName.toLowerCase() == "pre" && inline) {
