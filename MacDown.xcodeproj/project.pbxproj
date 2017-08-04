@@ -85,6 +85,7 @@
 		905EF1B7196164F300FC3CE9 /* macdown in Copy Command Line Utility */ = {isa = PBXBuildFile; fileRef = 905EF1A7196164CA00FC3CE9 /* macdown */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B5C5C1666A506FEA86435D25 /* libPods-macdown-cmd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 263367245B2D78A42C2F19D7 /* libPods-macdown-cmd.a */; };
 		D03DF9191EBC43B700F613BE /* FlowChart in Resources */ = {isa = PBXBuildFile; fileRef = D03DF9181EBC43B600F613BE /* FlowChart */; };
+		D0B8424E1F3306AD005E2CF3 /* Paginate in Resources */ = {isa = PBXBuildFile; fileRef = D0B8424D1F3306AD005E2CF3 /* Paginate */; };
 		EBFE3157737058F5A63699C8 /* libPods-MacDownTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C949FDE45493AE77DAD9BF4 /* libPods-MacDownTests.a */; };
 /* End PBXBuildFile section */
 
@@ -308,6 +309,7 @@
 		905EF1A7196164CA00FC3CE9 /* macdown */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = macdown; sourceTree = BUILT_PRODUCTS_DIR; };
 		905EF1A8196164CA00FC3CE9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D03DF9181EBC43B600F613BE /* FlowChart */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FlowChart; path = Resources/FlowChart; sourceTree = "<group>"; };
+		D0B8424D1F3306AD005E2CF3 /* Paginate */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Paginate; path = Resources/Paginate; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -441,6 +443,7 @@
 		1F4C8E9B194AE0C3004BF82E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D0B8424D1F3306AD005E2CF3 /* Paginate */,
 				D03DF9181EBC43B600F613BE /* FlowChart */,
 				1FCE066319633D6B00DC83B4 /* Data */,
 				1F9A14EE194EEEDD00D1C6A9 /* Styles */,
@@ -816,6 +819,7 @@
 				1F59491B1AB57C78007394CB /* syntax_highlighting.json in Resources */,
 				D03DF9191EBC43B700F613BE /* FlowChart in Resources */,
 				1F0D9DAB194AC8CB008E1856 /* InfoPlist.strings in Resources */,
+				D0B8424E1F3306AD005E2CF3 /* Paginate in Resources */,
 				1FCE066419633D6C00DC83B4 /* Data in Resources */,
 				1F3FC8AA1C85AE9F000965E1 /* MacDown.sdef in Resources */,
 				1FB3C0241E5061A2002AEB6A /* MPExportPanelAccessoryViewController.xib in Resources */,

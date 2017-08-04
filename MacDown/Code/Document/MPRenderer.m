@@ -209,6 +209,7 @@ NS_INLINE BOOL MPAreNilableStringsEqual(NSString *s1, NSString *s2)
 @property (readonly) NSArray *prismScripts;
 @property (readonly) NSArray *mathjaxScripts;
 @property (readonly) NSArray *flowchartScripts;
+@property (readonly) NSArray *paginateScripts;
 @property (readonly) NSArray *stylesheets;
 @property (readonly) NSArray *scripts;
 @property (copy) NSString *currentHtml;
@@ -448,6 +449,20 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
     return scripts;
 }
 
+- (NSArray *)paginateScripts
+{
+    NSMutableArray *scripts = [NSMutableArray array];
+
+    NSBundle *bundle = [NSBundle mainBundle];
+    MPEmbeddedScript *script =
+    [MPEmbeddedScript assetWithURL:[bundle URLForResource:@"init"
+                                            withExtension:@"js"
+                                             subdirectory:@"Paginate"]
+                           andType:kMPJavaScriptType];
+    [scripts addObject:script];
+    return scripts;
+}
+
 - (NSArray *)stylesheets
 {
     id<MPRendererDelegate> delegate = self.delegate;
@@ -478,6 +493,7 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
     if ([d rendererHasMathJax:self])
         [scripts addObjectsFromArray:self.mathjaxScripts];
     [scripts addObjectsFromArray:self.flowchartScripts];
+    [scripts addObjectsFromArray:self.paginateScripts];
     return scripts;
 }
 
@@ -625,6 +641,7 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
     
     scriptsOption = MPAssetEmbedded;
     [scripts addObjectsFromArray:self.flowchartScripts];
+    [scripts addObjectsFromArray:self.paginateScripts];
 
     NSString *title = [self.dataSource rendererHTMLTitle:self];
     if (!title)
