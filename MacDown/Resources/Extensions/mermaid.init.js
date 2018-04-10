@@ -14,6 +14,7 @@
     var domAll = document.querySelectorAll(".language-mermaid");
     for (var i = 0; i < domAll.length; i++) {
     var dom = domAll[i];
+    if (dom.tagName != "CODE") continue;
     var graphSource = dom.innerText || dom.textContent;
  
     dom = dom.parentElement;

@@ -47,6 +47,13 @@ void hoedown_patch_render_blockcode(
         lang = front;
     }
 
+    int font_size = 0;
+    int width = 0, height = 0;
+    if (lang && lang->data) {
+        parse_at_size(lang->data, &font_size, 0, "font"); // font@sx
+        parse_at_size(lang->data, &width, &height, " "); // @w%/@wxh
+    }
+
     hoedown_buffer *mapped = NULL;
     if (lang && extra->language_addition)
     {
@@ -55,7 +62,19 @@ void hoedown_patch_render_blockcode(
             lang = mapped;
     }
 
-    HOEDOWN_BUFPUTSL(ob, "<div><pre");
+    HOEDOWN_BUFPUTSL(ob, "<div");
+    if (width > 0) {
+        HOEDOWN_BUFPUTSL(ob, " style=\"");
+        if (height == -1)
+            hoedown_buffer_printf(ob, "width:%d%%;", width);
+        else if (height == 0)
+            hoedown_buffer_printf(ob, "width:%dpx;", width);
+        else
+            hoedown_buffer_printf(ob, "width:%dpx;height:%dpx", width, height);
+        HOEDOWN_BUFPUTSL(ob, "\"");
+    }
+    HOEDOWN_BUFPUTSL(ob, "><pre");
+
     if (state->flags & HOEDOWN_HTML_BLOCKCODE_LINE_NUMBERS)
         HOEDOWN_BUFPUTSL(ob, " class=\"line-numbers\"");
     if (back && back->size)
@@ -69,7 +88,11 @@ void hoedown_patch_render_blockcode(
         hoedown_escape_html(ob, lang->data, lang->size, 0);
     else
         HOEDOWN_BUFPUTSL(ob, "none");
-    HOEDOWN_BUFPUTSL(ob, "\">");
+    HOEDOWN_BUFPUTSL(ob, "\"");
+    if (font_size > 0) {
+        hoedown_buffer_printf(ob, " style=\"font-size:%dpx\"", font_size);
+    }
+    HOEDOWN_BUFPUTSL(ob, ">");
 
 	if (text)
     {
