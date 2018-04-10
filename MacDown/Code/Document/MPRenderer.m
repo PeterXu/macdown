@@ -210,6 +210,7 @@ NS_INLINE BOOL MPAreNilableStringsEqual(NSString *s1, NSString *s2)
 @property (readonly) NSArray *mathjaxScripts;
 @property (readonly) NSArray *flowchartScripts;
 @property (readonly) NSArray *paginateScripts;
+@property (readonly) NSArray *paginateStylesheets;
 @property (readonly) NSArray *stylesheets;
 @property (readonly) NSArray *scripts;
 @property (copy) NSString *currentHtml;
@@ -461,6 +462,18 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
                            andType:kMPJavaScriptType];
     [scripts addObject:script];
     return scripts;
+}
+
+- (NSArray *)paginateStylesheets
+{
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSURL *name = [bundle URLForResource:@"init"
+                              withExtension:@"css"
+                               subdirectory:@"Paginate/css"];
+    MPAsset *stylesheet = [MPStyleSheet CSSWithURL:name];
+    NSString *s = [stylesheet htmlForOption:MPAssetFullLink];
+    NSMutableArray *stylesheets = [NSMutableArray arrayWithObject:stylesheet];
+    return stylesheets;
 }
 
 - (NSArray *)stylesheets
