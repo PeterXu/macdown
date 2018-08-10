@@ -49,9 +49,13 @@ void hoedown_patch_render_blockcode(
 
     int font_size = 0;
     int width = 0, height = 0;
+    int theme_len = 0;
+    char theme[16] = {0};
     if (lang && lang->data) {
         parse_at_size(lang->data, &font_size, 0, "font"); // font@sx
         parse_at_size(lang->data, &width, &height, " "); // @w%/@wxh
+        theme_len = sizeof(theme)-1;
+        parse_at_attr(lang->data, theme, &theme_len, "theme"); // theme@
     }
 
     hoedown_buffer *mapped = NULL;
@@ -92,9 +96,12 @@ void hoedown_patch_render_blockcode(
     if (font_size > 0) {
         hoedown_buffer_printf(ob, " style=\"font-size:%dpx\"", font_size);
     }
+    if (theme_len > 0) {
+        hoedown_buffer_printf(ob, " theme=\"%s\"", theme);
+    }
     HOEDOWN_BUFPUTSL(ob, ">");
 
-	if (text)
+    if (text)
     {
         // Remove last newline to prevent prism from adding a blank line at the
         // end of code blocks.
