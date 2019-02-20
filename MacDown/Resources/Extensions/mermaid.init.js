@@ -11,37 +11,39 @@
   });
 
   var init = function() {
-    drawMermaid(".language-mermaid", true);
-    drawMermaid(".language-mermaidx", false);
+    drawMermaid("div pre code.language-mermaid");
     drawDoubleArrow();
   }
-  function drawMermaid(classname, inline) {
+  function drawMermaid(classname) {
     var domAll = document.querySelectorAll(classname);
     for (var i = 0; i < domAll.length; i++) {
-    var dom = domAll[i];
-    if (dom.tagName != "CODE") continue;
-    var theme = dom.getAttribute("theme");
-    if (theme != null) dom.removeAttribute("theme");
-    var graphSource = dom.innerText || dom.textContent;
- 
-    dom = dom.parentElement;
-    if (dom.tagName === "PRE" && inline) {
-      dom = dom.parentElement;
-    }
- 
-    var insertSvg = function(svgCode, bindFunctions){
-      this.innerHTML = svgCode;
-    };
+      var dom = domAll[i];
+      if (dom.tagName != "CODE") continue;
+      var theme = dom.getAttribute("theme");
+      if (theme != null) dom.removeAttribute("theme");
+      var isInline = false;
+      var inline = dom.getAttribute("inline");
+      if (inline != null) isInline = true;
 
-    if (theme != null && theme.length >= 3) {
-      mermaid.mermaidAPI.getConfig().theme = theme;
-    }
-    var graph = mermaid.mermaidAPI.render('graphDiv' + i, graphSource, insertSvg.bind(dom))
+      var graphSource = dom.innerText || dom.textContent;
+      dom = dom.parentElement;
+      if (dom.tagName === "PRE" && isInline) {
+        dom = dom.parentElement;
+      }
+
+      var insertSvg = function(svgCode, bindFunctions){
+        this.innerHTML = svgCode;
+      };
+
+      if (theme != null && theme.length >= 3) {
+        mermaid.mermaidAPI.getConfig().theme = theme;
+      }
+      var graph = mermaid.mermaidAPI.render('graphDiv' + i, graphSource, insertSvg.bind(dom));
     }
   };
 
   function drawDoubleArrow() {
-    var paths = document.querySelectorAll('path.path');
+    var paths = document.querySelectorAll('g.edgePath path.path');
     for (let k = 0; k < paths.length; k++) {
       const path = paths[k];
       var dstr = path.getAttribute('d');

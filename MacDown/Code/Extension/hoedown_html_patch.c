@@ -23,7 +23,7 @@ void hoedown_patch_render_blockcode(
     hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_buffer *lang,
     const hoedown_renderer_data *data)
 {
-	if (ob->size) hoedown_buffer_putc(ob, '\n');
+    if (ob->size) hoedown_buffer_putc(ob, '\n');
 
     hoedown_html_renderer_state *state = data->opaque;
     hoedown_html_renderer_state_extra *extra = state->opaque;
@@ -49,13 +49,17 @@ void hoedown_patch_render_blockcode(
 
     int font_size = 0;
     int width = 0, height = 0;
-    int theme_len = 0;
-    char theme[16] = {0};
+
+    int has_theme = 0;
+    char theme[64] = {0};
+    int has_inline = 0;
+
     if (lang && lang->data) {
-        parse_at_size(lang->data, &font_size, 0, "font"); // font@sx
-        parse_at_size(lang->data, &width, &height, " "); // @w%/@wxh
-        theme_len = sizeof(theme)-1;
-        parse_at_attr(lang->data, theme, &theme_len, "theme"); // theme@
+        parse_at_size(lang->data, &font_size, 0, "@font");      // @font=sx
+        parse_at_size(lang->data, &width, &height, "@size");    // @size=w%/w%h/wxh/wx
+
+        has_theme = parse_at_attr(lang->data, theme, sizeof(theme)-1, "@theme");    // @theme=dark
+        has_inline = parse_at_attr(lang->data, NULL, 0, "@inline");                 // @inline
     }
 
     hoedown_buffer *mapped = NULL;
@@ -66,7 +70,7 @@ void hoedown_patch_render_blockcode(
             lang = mapped;
     }
 
-    HOEDOWN_BUFPUTSL(ob, "<div");
+    HOEDOWN_BUFPUTSL(ob, "<div class=\"language-all\"");
     if (width > 0) {
         HOEDOWN_BUFPUTSL(ob, " style=\"");
         if (height == -1)
@@ -96,8 +100,11 @@ void hoedown_patch_render_blockcode(
     if (font_size > 0) {
         hoedown_buffer_printf(ob, " style=\"font-size:%dpx\"", font_size);
     }
-    if (theme_len > 0) {
+    if (has_theme > 0) {
         hoedown_buffer_printf(ob, " theme=\"%s\"", theme);
+    }
+    if (has_inline >= 0) {
+        hoedown_buffer_printf(ob, " inline=%d", 1);
     }
     HOEDOWN_BUFPUTSL(ob, ">");
 
@@ -111,7 +118,7 @@ void hoedown_patch_render_blockcode(
         hoedown_escape_html(ob, text->data, size, 0);
     }
 
-	HOEDOWN_BUFPUTSL(ob, "</code></pre></div>\n");
+    HOEDOWN_BUFPUTSL(ob, "</code></pre></div>\n");
 
     hoedown_buffer_free(mapped);
     hoedown_buffer_free(front);
@@ -124,7 +131,7 @@ void hoedown_patch_render_listitem(
     hoedown_buffer *ob, const hoedown_buffer *text, hoedown_list_flags flags,
     const hoedown_renderer_data *data)
 {
-	if (text)
+    if (text)
     {
         hoedown_html_renderer_state *state = data->opaque;
         size_t offset = 0;
@@ -142,7 +149,7 @@ void hoedown_patch_render_listitem(
                     HOEDOWN_BUFPUTSL(ob, "<input type=\"checkbox\" />");
                 else
                     HOEDOWN_BUFPUTSL(ob, "<input type=\"checkbox\">");
-				offset += 3;
+                offset += 3;
             }
             else if (strncmp((char *)(text->data + offset), "[x]", 3) == 0)
             {
@@ -152,7 +159,7 @@ void hoedown_patch_render_listitem(
                     HOEDOWN_BUFPUTSL(ob, "<input type=\"checkbox\" checked />");
                 else
                     HOEDOWN_BUFPUTSL(ob, "<input type=\"checkbox\" checked>");
-				offset += 3;
+                offset += 3;
             }
             else
             {
@@ -165,13 +172,13 @@ void hoedown_patch_render_listitem(
             HOEDOWN_BUFPUTSL(ob, "<li>");
             offset = 0;
         }
-		size_t size = text->size;
-		while (size && text->data[size - offset - 1] == '\n')
-			size--;
+        size_t size = text->size;
+        while (size && text->data[size - offset - 1] == '\n')
+          size--;
 
-		hoedown_buffer_put(ob, text->data + offset, size - offset);
-	}
-	HOEDOWN_BUFPUTSL(ob, "</li>\n");
+        hoedown_buffer_put(ob, text->data + offset, size - offset);
+    }
+    HOEDOWN_BUFPUTSL(ob, "</li>\n");
 }
 
 // Adds a "toc" class to the outmost UL element to support TOC styling.
