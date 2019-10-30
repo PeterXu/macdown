@@ -36,7 +36,7 @@
       };
 
       if (theme != null && theme.length >= 3) {
-        mermaid.mermaidAPI.getConfig().theme = theme;
+        mermaid.mermaidAPI.getConfigX().theme = theme;
       }
       var graph = mermaid.mermaidAPI.render('graphDiv' + i, graphSource, insertSvg.bind(dom));
     }
