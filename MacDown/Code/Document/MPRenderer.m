@@ -422,7 +422,8 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
 - (NSArray *)mathjaxScripts
 {
     NSMutableArray *scripts = [NSMutableArray array];
-    NSURL *url = [NSURL URLWithString:kMPMathJaxCDN];
+    //NSURL *url = [NSURL URLWithString:kMPMathJaxCDN];
+    NSURL *url = MPExtensionURL(@"MathJax.Tex", @"js");
     NSBundle *bundle = [NSBundle mainBundle];
     MPEmbeddedScript *script =
         [MPEmbeddedScript assetWithURL:[bundle URLForResource:@"init"
